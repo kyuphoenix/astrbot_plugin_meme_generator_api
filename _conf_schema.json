@@ -1,0 +1,62 @@
+{
+  "base_url": {
+    "description": "Meme 服务基础地址",
+    "type": "string",
+    "default": "https://memes.ikechan8370.com"
+  },
+  "reply": {
+    "description": "发送结果时是否引用原消息",
+    "type": "bool",
+    "default": true
+  },
+  "force_sharp": {
+    "description": "是否必须使用 # 前缀触发表情关键词",
+    "type": "bool",
+    "default": false
+  },
+  "reply_image_pick_mode": {
+    "description": "引用消息取图策略",
+    "type": "string",
+    "options": ["all", "first"],
+    "default": "all",
+    "hint": "all: 取引用消息中的全部图片；first: 仅取第一张图片"
+  },
+  "template_filter_mode": {
+    "description": "模板过滤模式",
+    "type": "string",
+    "options": ["blacklist", "whitelist"],
+    "default": "blacklist",
+    "hint": "blacklist 留空=启用全部；whitelist 留空=禁用全部"
+  },
+  "template_filter_list": {
+    "description": "模板匹配列表",
+    "type": "list",
+    "default": [],
+    "hint": "按模板 code 或关键词进行子串匹配"
+  },
+  "master_protect_do": {
+    "description": "是否启用主人保护逻辑",
+    "type": "bool",
+    "default": true
+  },
+  "protect_list": {
+    "description": "启用主人保护的模板代码列表",
+    "type": "list",
+    "default": ["lash", "do", "beat_up", "little_do"]
+  },
+  "master_qq_list": {
+    "description": "主人 QQ 列表",
+    "type": "list",
+    "default": []
+  },
+  "max_file_size_mb": {
+    "description": "源图片大小上限（MB）",
+    "type": "int",
+    "default": 10,
+    "slider": {
+      "min": 1,
+      "max": 30,
+      "step": 1
+    }
+  }
+}

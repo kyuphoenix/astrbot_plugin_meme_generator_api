@@ -1,0 +1,10 @@
+name: astrbot_plugin_meme_generator_api
+display_name: 表情包生成器 API
+desc: 基于远程 memes API 的 AstrBot 表情包生成插件
+version: v0.2.0
+author: hzh
+repo: ""
+icon: astrbot_plugin_meme_generator_api.png
+dependencies: []
+support_platforms:
+  - aiocqhttp
