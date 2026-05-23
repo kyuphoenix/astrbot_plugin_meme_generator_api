@@ -1,5 +1,6 @@
 # astrbot_plugin_meme_generator_api
 
+基于 [https://github.com/ikechan8370/yunzai-meme](https://github.com/ikechan8370/yunzai-meme) 迁移而来
 基于 [meme-generator](https://github.com/MemeCrafters/meme-generator-rs) API 的 AstrBot 表情包插件。
 
 本插件支持：
@@ -124,7 +125,3 @@ meme帮助
 - 检查 `base_url` 是否可访问
 - 后端服务是否正常
 - 输入图片是否超过 `max_file_size_mb`
-
----
-
-如果你是从 yunzai-meme 迁移过来，这个插件已经保留了核心使用习惯，并适配 AstrBot 的插件生命周期与配置系统。
