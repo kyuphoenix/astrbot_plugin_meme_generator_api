@@ -55,10 +55,17 @@ class MemeGeneratorApiPlugin(Star):
 
     @filter.command("meme_ping", alias={"meme状态"})
     async def meme_ping(self, event: AstrMessageEvent):
+        """检查插件是否正常加载。"""
         yield event.plain_result("表情包插件已就绪")
 
     @filter.command("meme帮助", alias={"memes帮助", "表情包帮助"})
     async def meme_help(self, event: AstrMessageEvent):
+        """
+        查看插件帮助信息。
+
+        用法:
+        - meme帮助
+        """
         yield event.plain_result(
             "使用说明:\n"
             "1) meme列表\n"
@@ -70,6 +77,12 @@ class MemeGeneratorApiPlugin(Star):
 
     @filter.command("meme更新", alias={"memes更新", "表情包更新"})
     async def meme_update(self, event: AstrMessageEvent):
+        """
+        更新模板缓存（infos/key_map）。
+
+        用法:
+        - meme更新
+        """
         yield event.plain_result("正在更新模板缓存...")
         await self._load_or_sync_data(force_remote=True)
         if self._list_cache_file.exists():
@@ -78,6 +91,15 @@ class MemeGeneratorApiPlugin(Star):
 
     @filter.command("meme搜索", alias={"memes搜索", "表情包搜索"})
     async def meme_search(self, event: AstrMessageEvent, keyword: str = ""):
+        """
+        按关键词搜索可用模板。
+
+        参数:
+        - keyword: 搜索词
+
+        用法:
+        - meme搜索 摸
+        """
         keyword = keyword.strip()
         if not keyword:
             yield event.plain_result("请输入要搜索的关键词")
@@ -90,6 +112,12 @@ class MemeGeneratorApiPlugin(Star):
 
     @filter.command("meme列表", alias={"memes列表", "表情包列表"})
     async def meme_list(self, event: AstrMessageEvent):
+        """
+        获取并发送模板总览图。
+
+        用法:
+        - meme列表
+        """
         try:
             image_bytes = await self._get_render_list_image()
             yield event.chain_result([Image.fromBytes(image_bytes)])
@@ -99,6 +127,14 @@ class MemeGeneratorApiPlugin(Star):
 
     @filter.command("随机meme", alias={"随机表情包"})
     async def random_meme(self, event: AstrMessageEvent):
+        """
+        随机选择一个模板并生成图片。
+
+        生成后会额外返回本次使用的模板名称。
+
+        用法:
+        - 随机meme
+        """
         keys = [
             k for k, v in self.infos.items()
             if v.get("params", {}).get("min_images", 0) == 1
