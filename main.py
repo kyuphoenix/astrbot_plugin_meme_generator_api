@@ -151,6 +151,7 @@ class MemeGeneratorApiPlugin(Star):
 
     @filter.event_message_type(filter.EventMessageType.ALL)
     async def on_message(self, event: AstrMessageEvent):
+        """监听表情包关键词"""
         msg = (event.get_message_str() or "").strip()
         if not msg:
             return
