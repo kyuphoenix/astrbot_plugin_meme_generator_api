@@ -14,6 +14,26 @@
     "type": "bool",
     "default": false
   },
+  "http_timeout_seconds": {
+    "description": "HTTP 请求超时秒数",
+    "type": "int",
+    "default": 30,
+    "slider": {
+      "min": 5,
+      "max": 120,
+      "step": 5
+    }
+  },
+  "http_retry_times": {
+    "description": "HTTP 超时重试次数",
+    "type": "int",
+    "default": 2,
+    "slider": {
+      "min": 0,
+      "max": 5,
+      "step": 1
+    }
+  },
   "reply_image_pick_mode": {
     "description": "引用消息取图策略",
     "type": "string",
