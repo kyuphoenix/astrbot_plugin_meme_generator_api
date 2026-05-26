@@ -146,6 +146,8 @@ class MemeGeneratorApiPlugin(Star):
             return
         if self.force_sharp and not msg.startswith("#"):
             return
+        if not self._passive_trigger_matches(event, normalized, target):
+            return
 
         await self._run_meme_generation(event, normalized)
 
@@ -202,6 +204,34 @@ class MemeGeneratorApiPlugin(Star):
         candidates = [k for k in self.key_map.keys() if msg.startswith(k) and self._is_keyword_allowed(k)]
         return max(candidates, key=len) if candidates else None
 
+    def _passive_trigger_matches(self, event: AstrMessageEvent, normalized_msg: str, target: str) -> bool:
+        target_code = self.key_map.get(target)
+        if not target_code:
+            return False
+
+        info = self.infos.get(target_code, {})
+        params = info.get("params", {})
+        min_images = int(params.get("min_images", 0))
+        min_texts = int(params.get("min_texts", 0))
+
+        tail = normalized_msg[len(target):]
+        text_part, _, _args_part = tail.partition("#")
+
+        if min_texts > 0:
+            if not text_part.startswith(" "):
+                return False
+            candidate_text = text_part.strip()
+            if not candidate_text:
+                return False
+            text_items = [x.strip() for x in candidate_text.split("/") if x.strip()]
+            if len(text_items) < min_texts:
+                return False
+        else:
+            if text_part.strip():
+                return False
+
+        return True
+
     async def _prepare_image_ids(self, event: AstrMessageEvent, target_code: str, info: Dict[str, Any]) -> Optional[List[Dict[str, str]]]:
         params = info.get("params", {})
         max_images = int(params.get("max_images", 0))
@@ -213,7 +243,9 @@ class MemeGeneratorApiPlugin(Star):
         if not img_urls:
             img_urls = [await self._get_avatar_url(event)]
         if len(img_urls) < min_images:
-            img_urls = [await self._get_avatar_url(event)] + img_urls
+            fallback_avatar = await self._get_avatar_url(event)
+            while len(img_urls) < min_images:
+                img_urls = [fallback_avatar] + img_urls
 
         if self.master_protect_do and target_code in self.protect_list:
             img_urls = await self._apply_master_protect(event, img_urls)
@@ -250,6 +282,28 @@ class MemeGeneratorApiPlugin(Star):
                 urls.append(f"https://q1.qlogo.cn/g?b=qq&s=160&nk={seg.qq}")
 
         return urls
+
+    def _count_explicit_image_inputs(self, event: AstrMessageEvent) -> int:
+        count = 0
+        segs = event.get_messages()
+
+        for seg in segs:
+            if isinstance(seg, Image) and seg.url:
+                count += 1
+
+        for seg in segs:
+            if isinstance(seg, Reply):
+                reply_urls = self._extract_urls_from_reply(seg)
+                if self.reply_image_pick_mode == "first":
+                    count += 1 if reply_urls else 0
+                else:
+                    count += len(reply_urls)
+
+        for seg in segs:
+            if seg.__class__.__name__ == "At" and getattr(seg, "qq", None):
+                count += 1
+
+        return count
 
     def _extract_urls_from_reply(self, reply_seg: Reply) -> List[str]:
         urls: List[str] = []
