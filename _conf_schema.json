@@ -37,14 +37,20 @@
   "reply_image_pick_mode": {
     "description": "引用消息取图策略",
     "type": "string",
-    "options": ["all", "first"],
+    "options": [
+      "all",
+      "first"
+    ],
     "default": "all",
     "hint": "all: 取引用消息中的全部图片；first: 仅取第一张图片"
   },
   "template_filter_mode": {
     "description": "模板过滤模式",
     "type": "string",
-    "options": ["blacklist", "whitelist"],
+    "options": [
+      "blacklist",
+      "whitelist"
+    ],
     "default": "blacklist",
     "hint": "blacklist 留空=启用全部；whitelist 留空=禁用全部"
   },
@@ -62,7 +68,12 @@
   "protect_list": {
     "description": "启用主人保护的模板代码列表",
     "type": "list",
-    "default": ["lash", "do", "beat_up", "little_do"]
+    "default": [
+      "lash",
+      "do",
+      "beat_up",
+      "little_do"
+    ]
   },
   "master_qq_list": {
     "description": "主人 QQ 列表",
@@ -70,7 +81,7 @@
     "default": []
   },
   "max_file_size_mb": {
-    "description": "源图片大小上限（MB）",
+    "description": "输入图片大小限制（MB）",
     "type": "int",
     "default": 10,
     "slider": {
