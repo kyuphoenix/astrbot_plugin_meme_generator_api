@@ -227,10 +227,41 @@ class MemeGeneratorApiPlugin(Star):
             if len(text_items) < min_texts:
                 return False
         else:
-            if text_part.strip():
+            if self._has_non_input_trailing_text(event, target):
                 return False
 
         return True
+
+    def _has_non_input_trailing_text(self, event: AstrMessageEvent, target: str) -> bool:
+        seen_target = False
+        trailing_text_parts: List[str] = []
+
+        for seg in event.get_messages():
+            if isinstance(seg, Image):
+                continue
+            if isinstance(seg, Reply):
+                continue
+            if seg.__class__.__name__ == "At":
+                continue
+
+            text = getattr(seg, "text", None)
+            if not isinstance(text, str):
+                continue
+
+            if not seen_target:
+                stripped = text.lstrip()
+                if stripped.startswith(target):
+                    seen_target = True
+                    remainder = stripped[len(target):]
+                    if remainder.strip():
+                        trailing_text_parts.append(remainder.strip())
+                elif target in stripped:
+                    return True
+            else:
+                if text.strip():
+                    trailing_text_parts.append(text.strip())
+
+        return len(trailing_text_parts) > 0
 
     async def _prepare_image_ids(self, event: AstrMessageEvent, target_code: str, info: Dict[str, Any]) -> Optional[List[Dict[str, str]]]:
         params = info.get("params", {})
